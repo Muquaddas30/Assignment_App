@@ -1,8 +1,13 @@
 'use strict';
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../../config/db'); 
+const sequelize = require('../../config/db');
 
 const Submission = sequelize.define('Submission', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
   quizId: {
     type: DataTypes.INTEGER
   },
@@ -22,13 +27,13 @@ const Submission = sequelize.define('Submission', {
     type: DataTypes.STRING
   }
 }, {
- 
+
   freezeTableName: true,
   timestamps: false,
   paranoid: true,
 });
 
-Submission.associate = function(models) {
+Submission.associate = function (models) {
   // Each submission belongs to one quiz
   Submission.belongsTo(models.Quiz, { foreignKey: 'quizId' });
 

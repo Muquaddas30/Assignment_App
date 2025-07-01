@@ -11,7 +11,7 @@ router.use(verifyToken, allowRoles("admin"));
 
 router.post(
   "/teachers",
-  [
+  [ 
     body("name").notEmpty().withMessage("Name is required"),
     body("email").isEmail().withMessage("Valid email is required"),
     body("password")
@@ -24,7 +24,7 @@ router.post(
 
 router.get("/teachers", adminController.getAllTeachers);
 
-// ✅ Get One Teacher by ID
+
 router.get(
   "/teachers/:id",
   [param("id").isInt().withMessage("ID must be an integer")],
@@ -54,5 +54,11 @@ router.delete(
   handleValidation,
   adminController.deleteTeacher
 );
+
+router.get("/quizzes", adminController.getAllQuizzes);
+router.put("/quizzes/:id", adminController.updateQuiz);
+router.delete("/quizzes/:id", adminController.deleteQuiz);
+
+
 
 module.exports = router;

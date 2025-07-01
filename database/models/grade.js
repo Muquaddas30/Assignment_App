@@ -13,10 +13,9 @@ const Grade = sequelize.define('Grade', {
     type: DataTypes.STRING
   }
 }, {
-  sequelize,
-  freezeTableName: true,
-  tableName: 'Grade',
-  timestamps: true
+  timestamps: false,
+  paranoid: true, 
+  freezeTableName: true
 });
 
 

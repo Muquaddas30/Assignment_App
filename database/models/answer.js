@@ -14,10 +14,9 @@ const Answer = sequelize.define('Answer', {
     type: DataTypes.INTEGER
   }
 }, {
-  sequelize,
-  freezeTableName: true,
-  tableName: 'Answer',
-  timestamps: true
+  timestamps: false,
+  paranoid: true, 
+  freezeTableName: true
 });
 
 

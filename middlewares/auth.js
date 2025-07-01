@@ -1,13 +1,18 @@
-const { verifyToken: verifyTokenUtility } = require('../utils/jwt'); // ✅ Rename here
-const { User } = require('../database/models/user'); 
+const { verifyToken: verifyTokenUtility } = require('../utils/jwt');
+const  User  = require('../database/models/user'); 
+
 const verifyToken = async (req, res, next) => {
   const header = req.headers.authorization;
-  const token = header.split(" ")[1]; // Extracts token after "Bearer "
 
+  if (!header || !header.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'No token provided' });
+  }
 
+  const token = header.split(' ')[1];
 
   try {
     const decoded = verifyTokenUtility(token); 
+
     const user = await User.findByPk(decoded.id);
     if (!user) return res.status(401).json({ error: 'User not found' });
 

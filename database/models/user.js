@@ -31,13 +31,20 @@ const User = sequelize.define('User', {
     type: Sequelize.ENUM('admin', 'teacher', 'student'),
     allowNull: false,
   },
- 
-}, 
-{
-  freezeTableName: true,
-  timestamps: false,
-  paranoid: true,
 
-});
+},
+  {
+    freezeTableName: true,
+    timestamps: false,
+    paranoid: true,
+
+  });
+// user association
+User.associate = function (models) {
+  User.hasMany(models.Quiz, {
+    foreignKey: 'teacherId',
+    as: 'quizzes'
+  });
+};
 
 module.exports = User;

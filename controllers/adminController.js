@@ -1,4 +1,8 @@
-const { User } = require('../database/models/user');
+// const User = require('../database/models/user');
+// const Quiz = require('../database/models/quiz');
+
+const { User, Quiz } = require('../database/models')
+const models = global.models;
 const bcrypt = require('bcrypt');
 
 
@@ -6,13 +10,13 @@ const createTeacher = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    
+
     const existing = await User.findOne({ where: { email } });
     if (existing) {
       return res.status(400).json({ error: 'Email already exists' });
     }
 
-   
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create the teacher
@@ -23,13 +27,20 @@ const createTeacher = async (req, res) => {
       role: 'teacher',
     });
 
-    res.status(201).json({ message: 'Teacher created', teacher });
+    res.status(201).json({
+      message: 'Teacher created', teacher: {
+
+        name: teacher.name,
+        email: teacher.email,
+        role: teacher.role
+      }
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error while creating teacher' });
   }
 };
-// Get One Teacher by ID
+// Get One Teacher 
 const getTeacherById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -101,10 +112,71 @@ const deleteTeacher = async (req, res) => {
   }
 };
 
+const getAllQuizzes = async (req, res) => {
+  try {
+    const quizzes = await Quiz.findAll({
+      include: [
+        {
+          model: models.User,
+          as: 'teacher',
+          attributes: ['id', 'name', 'email']
+        }
+      ]
+    });
+
+    res.status(200).json(quizzes);
+  } catch (err) {
+    console.log({ err })
+    console.error('Error fetching quizzes:', err);
+    res.status(500).json({ error: 'Failed to retrieve quizzes' });
+  }
+};
+
+const deleteQuiz = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await Quiz.destroy({ where: { id } });
+
+    if (!result) {
+      return res.status(404).json({ error: "Quiz not found" });
+    }
+
+    res.json({ message: "Quiz deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to delete quiz" });
+  }
+};
+
+const updateQuiz = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, status } = req.body;
+
+    const [updated] = await Quiz.update(
+      { title, status },
+      { where: { id } }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ error: "Quiz not found" });
+    }
+
+    res.json({ message: "Quiz updated successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to update quiz" });
+  }
+};
+
+
 module.exports = {
   createTeacher,
   getAllTeachers,
   getTeacherById,
   updateTeacher,
-  deleteTeacher
+  deleteTeacher,
+  updateQuiz,
+  deleteQuiz,
+  getAllQuizzes
 };

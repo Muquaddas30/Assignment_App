@@ -3,6 +3,8 @@ const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../../config/db'); 
 
 const Question = sequelize.define('Question', {
+
+  
   quizId: {
     type: DataTypes.INTEGER
   },
@@ -31,10 +33,9 @@ const Question = sequelize.define('Question', {
     allowNull: false
   }
 }, {
-  sequelize,
-  freezeTableName: true,
-  tableName: 'Question',
-  timestamps: true
+  timestamps: false,
+  paranoid: true, 
+  freezeTableName: true
 });
 
 // Associations

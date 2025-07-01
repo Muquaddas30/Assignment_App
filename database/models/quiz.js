@@ -3,31 +3,43 @@ const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../../config/db'); 
 
 const Quiz = sequelize.define('Quiz', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
   title: {
     type: DataTypes.STRING,
     allowNull: false
   },
   status: {
     type: DataTypes.ENUM('active', 'pending', 'submitted'),
+    allowNull: false,
+    defaultValue: 'pending'
+  },
+  teacherId: {
+    type: DataTypes.INTEGER,
     allowNull: false
   }
 }, {
-  sequelize,
-  freezeTableName: true,
-  tableName: 'Quiz',
-  timestamps: true
+  timestamps: false,
+  paranoid: true, 
+  freezeTableName: true
 });
 
-// Associations
 Quiz.associate = function(models) {
-  // Each quiz belongs to one teacher 
-  Quiz.belongsTo(models.User, { foreignKey: 'teacherId', as: 'teacher' });
+  Quiz.belongsTo(models.User, {
+    foreignKey: 'teacherId',
+    as: 'teacher'
+  });
 
-  // A quiz has many questions
-  Quiz.hasMany(models.Question, { foreignKey: 'quizId' });
+  Quiz.hasMany(models.Question, {
+    foreignKey: 'quizId'
+  });
 
-  // A quiz has many student submissions
-  Quiz.hasMany(models.Submission, { foreignKey: 'quizId' });
+  Quiz.hasMany(models.Submission, {
+    foreignKey: 'quizId'
+  });
 };
 
 module.exports = Quiz;
