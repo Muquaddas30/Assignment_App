@@ -32,8 +32,10 @@ router.get(
 
 router.put(
   "/submission/:submissionId/grade",
+  //run all 1 by 1 valids checks
   [
     param("submissionId").isInt().withMessage("Submission ID must be an integer"),
+                       // express-validator rule 
     body("score").isInt({ min: 0 }).withMessage("Score must be a positive integer"),
     body("remarks").optional().isString().withMessage("Remarks must be text")
   ],

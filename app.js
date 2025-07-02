@@ -4,7 +4,8 @@ const app = express();
 
 const authRoutes = require("./routes/authRoute");
 const adminRoutes = require('./routes/adminRoute');
-const teacherRoute = require("./routes/teacherRoute")
+const teacherRoute = require("./routes/teacherRoute");
+const studentRoute = require("./routes/studentRoute");
 
 app.use(express.json());
 
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/teachers", teacherRoute);
+app.use("/api/student", studentRoute);
 
 // Global error handler
 app.use((err, req, res, next) => {
